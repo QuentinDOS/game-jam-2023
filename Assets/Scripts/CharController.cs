@@ -13,13 +13,17 @@ public class CharController : MonoBehaviour
     public float moveSpeed;
     public float jumpForce;
     public bool isCrouched;
+    public int maxJumps = 1;
 
-    private Vector2 moveInput;
+    private int jumps;
+
+
+    private Vector3 moveInput;
 
     // These build a raycast system for jumping
     public LayerMask whatIsGround;
     public Transform groundPoint;
-    private bool isGrounded;
+    public bool isGrounded;
 
     //Animator refrence 
     public Animator anim;
@@ -27,8 +31,6 @@ public class CharController : MonoBehaviour
     //For accessing the SpriteRenderers X/Y flip
     public SpriteRenderer theSR;
 
-    // These sets of code control the hot and cold and players health
-    //Collider triggers for Hot and Cold
 
     //public HealthBar healthBar;
 
@@ -53,6 +55,11 @@ public class CharController : MonoBehaviour
 
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W))
+        {
+        this.Jump ();
+        }
+    
         // Code for crouching and stoping movement when crouching
         if (Input.GetButtonDown("Crouch"))
         {
@@ -86,35 +93,44 @@ public class CharController : MonoBehaviour
         //anim.SetBool("isCrouched", isCrouched);
         //anim.SetFloat("currentHealth", currentHealth);
 
-        //Commented out to remove jumping but not deleted incase we change our minds
         //Stores information if the raycast hits anything and detects the gorund when jumping
         RaycastHit hit;
-        if (Physics.Raycast(groundPoint.position, Vector3.down, out hit, .3f, whatIsGround))
+        if (Physics.Raycast(groundPoint.position, Vector3.down, out hit, .9f, whatIsGround))
         {
+            Debug.DrawRay(groundPoint.position, Vector3.down * hit.distance, Color.green);
             isGrounded = true;
+            jumps = maxJumps;
         }
         else
         {
+            Debug.DrawRay(groundPoint.position, Vector3.down * .9f, Color.red);
             isGrounded = false;
         }
 
 
-        // Key input for the jump and velocity
-        if (Input.GetButtonDown("Jump") && isGrounded)
-        {
-            theRB.velocity += new Vector3(0f, jumpForce, 0f);
-        } 
-
-
         //This flips the sprite when moving
-        if (!theSR.flipX && moveInput.x > 0)
+        if (!theSR.flipX && moveInput.x < 0)
         {
             theSR.flipX = true;
         }
-        else if (theSR.flipX && moveInput.x < 0)
+        else if (theSR.flipX && moveInput.x > 0)
         {
             theSR.flipX = false;
         }
 
     }
+    private void Jump()
+       {
+        if (jumps > 0)
+            {
+                gameObject.GetComponent<Rigidbody> ().AddForce (new Vector3 (0, jumpForce), ForceMode.Impulse);
+                isGrounded = false;
+                jumps = jumps - 1;
+            }
+            if (jumps == 0)
+            {
+                return;
+            }
+        }
+
 }
