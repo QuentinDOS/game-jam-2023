@@ -17,7 +17,6 @@ public class CharController : MonoBehaviour
 
     private int jumps;
 
-
     private Vector3 moveInput;
 
     // These build a raycast system for jumping
@@ -60,23 +59,6 @@ public class CharController : MonoBehaviour
         this.Jump ();
         }
     
-        // Code for crouching and stoping movement when crouching
-        if (Input.GetButtonDown("Crouch"))
-        {
-            Debug.Log("CROUCHING");
-            isCrouched = true;
-            moveSpeed = 0;
-        }
-        else if (Input.GetButtonUp("Crouch"))
-        {
-            isCrouched = false;
-            moveSpeed = 4;
-        }
-
-        // not sure what this code does is this part of the inventory? -CJ
-        /*  if (EventSystem.current.IsPointerOverGameObject())
-              return; */
-
         //Gets the inputs for movement
         moveInput.x = Input.GetAxis("Horizontal");
         //moveInput.y = Input.GetAxis("Vertical");
@@ -87,15 +69,9 @@ public class CharController : MonoBehaviour
         // Applies the inputs to the Rigidbody 
         theRB.velocity = new Vector3(moveInput.x * moveSpeed, theRB.velocity.y, moveInput.y * moveSpeed);
 
-
-        //Animator controller for movement recieved from the rigidbody
-        //anim.SetFloat("Speed", theRB.velocity.magnitude);
-        //anim.SetBool("isCrouched", isCrouched);
-        //anim.SetFloat("currentHealth", currentHealth);
-
         //Stores information if the raycast hits anything and detects the gorund when jumping
         RaycastHit hit;
-        if (Physics.Raycast(groundPoint.position, Vector3.down, out hit, .9f, whatIsGround))
+        if (Physics.Raycast(groundPoint.position, Vector3.down, out hit, .4f, whatIsGround))
         {
             Debug.DrawRay(groundPoint.position, Vector3.down * hit.distance, Color.green);
             isGrounded = true;
@@ -103,7 +79,7 @@ public class CharController : MonoBehaviour
         }
         else
         {
-            Debug.DrawRay(groundPoint.position, Vector3.down * .9f, Color.red);
+            Debug.DrawRay(groundPoint.position, Vector3.down * .4f, Color.red);
             isGrounded = false;
         }
 
@@ -122,9 +98,9 @@ public class CharController : MonoBehaviour
     private void Jump()
        {
         if (jumps > 0)
-            {
-                gameObject.GetComponent<Rigidbody> ().AddForce (new Vector3 (0, jumpForce), ForceMode.Impulse);
+            {     
                 isGrounded = false;
+                gameObject.GetComponent<Rigidbody> ().AddForce (new Vector3 (0, jumpForce), ForceMode.Impulse);
                 jumps = jumps - 1;
             }
             if (jumps == 0)
