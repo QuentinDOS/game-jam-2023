@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -5,6 +6,7 @@ using UnityEngine;
 
 public class BasicEnemyAI : MonoBehaviour
 {
+    public int damage = 1;
     private float timeRunning = 0;
     public LayerMask whatIsGround;
     public float viewDistance = 1f;
@@ -15,12 +17,20 @@ public class BasicEnemyAI : MonoBehaviour
 
     Rigidbody2D rb;
     private int direction = 1;
+
+    private Animator anim;
+    
     // Start is called before the first frame update
     void Start()
     {
         if(!rb)
         {
-            rb = this.GetComponent<Rigidbody2D>();
+            rb = GetComponent<Rigidbody2D>();
+        }
+
+        if (!anim)
+        {
+            anim = GetComponent<Animator>();
         }
     }
     private RaycastHit2D CheckForGround(int direction)
@@ -49,9 +59,21 @@ public class BasicEnemyAI : MonoBehaviour
         if (hit.collider != null)
         {
             MoveToGround(hit);
+            anim.SetBool("isMoving", true);
+        }
+        else
+        {
+            anim.SetBool("isMoving",false);
         }
     }
 
-
-
+    private void OnCollisionEnter2D(Collision2D col)
+    {
+        var player = col.gameObject.GetComponent<CharController>();
+        if (player != null)
+        {
+            player.DecreaseHealth(damage);
+            player.Respawn();
+        }
+    }
 }
