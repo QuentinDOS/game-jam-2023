@@ -37,6 +37,9 @@ public class CharController : MonoBehaviour
     [Range(0, 100)]
     public float currentHealth = 100;
 
+    [SerializeField]
+    private float jumpDelay;
+
     void OnTriggerEnter(Collider other)
     {
         if (other)
@@ -54,11 +57,14 @@ public class CharController : MonoBehaviour
 
     void Update()
     {
+
         if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W))
         {
-        this.Jump ();
+            if(this.jumpDelay > .03f)
+                this.Jump();
         }
-    
+
+
         //Gets the inputs for movement
         moveInput.x = Input.GetAxis("Horizontal");
         //moveInput.y = Input.GetAxis("Vertical");
@@ -74,6 +80,9 @@ public class CharController : MonoBehaviour
         if (Physics.Raycast(groundPoint.position, Vector3.down, out hit, .7f, whatIsGround))
         {
             Debug.DrawRay(groundPoint.position, Vector3.down * hit.distance, Color.green);
+
+            jumpDelay = hit.distance;
+            //Debug.Log(hit.distance);
             isGrounded = true;
             jumps = maxJumps;
         }
@@ -81,6 +90,7 @@ public class CharController : MonoBehaviour
         {
             Debug.DrawRay(groundPoint.position, Vector3.down * .7f, Color.red);
             isGrounded = false;
+            jumpDelay = 0f;
         }
 
         //This flips the sprite when moving
@@ -96,12 +106,14 @@ public class CharController : MonoBehaviour
         anim.SetFloat("MoveSpeed", moveSpeed);
 
     }
+    
     private void Jump()
        {
+        Debug.Log("Jumping");
         if (jumps > 0)
             {     
                 isGrounded = false;
-                gameObject.GetComponent<Rigidbody> ().AddForce (new Vector3 (0, jumpForce), ForceMode.Impulse);
+                gameObject.GetComponent<Rigidbody>().AddForce (new Vector3 (0, jumpForce), ForceMode.Impulse);
                 jumps = jumps - 1;
             }
             if (jumps == 0)
