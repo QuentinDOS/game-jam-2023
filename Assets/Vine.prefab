@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7469865343984477575}
   - component: {fileID: 7469865343984477572}
   - component: {fileID: 7469865343984477573}
+  - component: {fileID: 7328042597988000841}
   m_Layer: 0
   m_Name: Cylinder (5)
   m_TagString: Untagged
@@ -94,7 +95,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7469865343984477570}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.5000001
   m_Height: 2
@@ -152,6 +153,18 @@ HingeJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &7328042597988000841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7469865343984477570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 345634844d362ca89b165ccc58f77a0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7469865344399513552
 GameObject:
   m_ObjectHideFlags: 0
@@ -166,6 +179,7 @@ GameObject:
   - component: {fileID: 7469865344399513557}
   - component: {fileID: 7469865344399513555}
   - component: {fileID: 7469865344399513554}
+  - component: {fileID: 554207217519592717}
   m_Layer: 0
   m_Name: Cylinder (2)
   m_TagString: Untagged
@@ -246,7 +260,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7469865344399513552}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.5000001
   m_Height: 2
@@ -304,6 +318,18 @@ HingeJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &554207217519592717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7469865344399513552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 345634844d362ca89b165ccc58f77a0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7469865344886385119
 GameObject:
   m_ObjectHideFlags: 0
@@ -318,6 +344,7 @@ GameObject:
   - component: {fileID: 7469865344886384672}
   - component: {fileID: 7469865344886385118}
   - component: {fileID: 7469865344886384673}
+  - component: {fileID: 6658433423341014287}
   m_Layer: 0
   m_Name: Cylinder (1)
   m_TagString: Untagged
@@ -398,7 +425,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7469865344886385119}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.5000001
   m_Height: 2
@@ -456,6 +483,18 @@ HingeJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &6658433423341014287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7469865344886385119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 345634844d362ca89b165ccc58f77a0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7469865344925391862
 GameObject:
   m_ObjectHideFlags: 0
@@ -524,6 +563,7 @@ GameObject:
   - component: {fileID: 7469865345184974890}
   - component: {fileID: 7469865345184974888}
   - component: {fileID: 7469865345184974891}
+  - component: {fileID: 4410750189004389793}
   m_Layer: 0
   m_Name: Cylinder
   m_TagString: Untagged
@@ -604,7 +644,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7469865345184974889}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.5000001
   m_Height: 2
@@ -662,6 +702,18 @@ HingeJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &4410750189004389793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7469865345184974889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 345634844d362ca89b165ccc58f77a0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7469865345226353106
 GameObject:
   m_ObjectHideFlags: 0
@@ -676,6 +728,7 @@ GameObject:
   - component: {fileID: 7469865345226353111}
   - component: {fileID: 7469865345226353109}
   - component: {fileID: 7469865345226353108}
+  - component: {fileID: 5529912066318442772}
   m_Layer: 0
   m_Name: Cylinder (3)
   m_TagString: Untagged
@@ -756,7 +809,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7469865345226353106}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.5000001
   m_Height: 2
@@ -814,6 +867,18 @@ HingeJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &5529912066318442772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7469865345226353106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 345634844d362ca89b165ccc58f77a0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7469865345649518291
 GameObject:
   m_ObjectHideFlags: 0
@@ -828,6 +893,7 @@ GameObject:
   - component: {fileID: 7469865345649518292}
   - component: {fileID: 7469865345649518290}
   - component: {fileID: 7469865345649518293}
+  - component: {fileID: 4628087821414739645}
   m_Layer: 0
   m_Name: Cylinder (4)
   m_TagString: Untagged
@@ -908,7 +974,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7469865345649518291}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.5000001
   m_Height: 2
@@ -966,3 +1032,15 @@ HingeJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &4628087821414739645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7469865345649518291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 345634844d362ca89b165ccc58f77a0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
