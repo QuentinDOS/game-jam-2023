@@ -40,6 +40,9 @@ public class CharController : MonoBehaviour
     [SerializeField]
     private float jumpDelay;
 
+    [SerializeField]
+    private float justSwitchedFrames = 0;
+
     void OnTriggerEnter(Collider other)
     {
         if (other)
@@ -103,7 +106,21 @@ public class CharController : MonoBehaviour
             theSR.flipX = false;
         }
         anim.SetBool("onGround", isGrounded);
-        anim.SetFloat("MoveSpeed", moveSpeed);
+        if(Input.GetAxis("Horizontal") < 0)
+        {
+            anim.SetFloat("MoveSpeed", -Input.GetAxis("Horizontal"));
+            justSwitchedFrames = -Input.GetAxis("Horizontal");
+        }
+        else
+        {
+            anim.SetFloat("MoveSpeed", Input.GetAxis("Horizontal"));
+            justSwitchedFrames = Input.GetAxis("Horizontal");
+        }
+        //if(Input.GetAxis("Horizontal") == 0 && justSwitchedFrames != 0)
+        //{
+        //    anim.SetFloat("MoveSpeed", justSwitchedFrames);
+        //}
+        //    anim.SetFloat("MoveSpeed", 3);
 
     }
     

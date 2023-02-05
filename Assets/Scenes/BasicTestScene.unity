@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
+  m_IndirectSpecularColor: {r: 0.18029127, g: 0.22572401, b: 0.3069303, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -441,6 +441,8 @@ MonoBehaviour:
   theSR: {fileID: 169387640}
   maxHealth: 100
   currentHealth: 100
+  jumpDelay: 0
+  justSwitchedFrames: 0
 --- !u!95 &169387639
 Animator:
   serializedVersion: 5
@@ -2651,14 +2653,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 848565056}
-  m_LocalRotation: {x: -0.004538764, y: 0.0035474529, z: 0.99883103, w: 0.0479938}
-  m_LocalPosition: {x: -16.58, y: 5.7, z: 0}
-  m_LocalScale: {x: 9.1364, y: 1, z: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -29.02, y: 5.7, z: 0}
+  m_LocalScale: {x: 34.66533, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 57
-  m_LocalEulerAnglesHint: {x: -0.431, y: -0.5, z: 174.5}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &848565061
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6040,9 +6042,9 @@ GameObject:
   - component: {fileID: 2006290998}
   - component: {fileID: 2006290997}
   - component: {fileID: 2006290996}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube (7)
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
