@@ -1,142 +1,113 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.EventSystems;
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CharController : MonoBehaviour
 {
     //This controller uses the Rigidbody system for movement
-    public Rigidbody theRB;
+    public Rigidbody2D theRB;
 
     //Variables for movement and jump force
-
     public float moveSpeed;
     public float jumpForce;
-    public bool isCrouched;
     public int maxJumps = 1;
 
     private int jumps;
 
-    private Vector3 moveInput;
+    private Vector2 moveInput;
 
     // These build a raycast system for jumping
     public LayerMask whatIsGround;
-    public Transform groundPoint;
     public bool isGrounded;
 
-    //Animator refrence 
+    //Animator reference 
     public Animator anim;
 
     //For accessing the SpriteRenderers X/Y flip
     public SpriteRenderer theSR;
 
-
-    //public HealthBar healthBar;
-
-    public float maxHealth = 100;
-    [Range(0, 100)]
-    public float currentHealth = 100;
-
     [SerializeField]
     private float jumpDelay;
 
-    [SerializeField]
-    private float justSwitchedFrames = 0;
+    [SerializeField] 
+    private float jumpDistanceCheck;
 
-    void OnTriggerEnter(Collider other)
+    private PlayerInputActions playerInput;
+
+    private void Awake()
     {
-        if (other)
-        {
-            // Debug.Log("HIT");
-        }
-        if (other.gameObject.tag == "MossSlope")
-        {
-            Debug.Log("You got hit");
-            currentHealth -= 200 * Time.deltaTime;
-         //   healthBar.SetHealth(currentHealth);
-
-        }
+        playerInput = new PlayerInputActions();
     }
 
-    void Update()
+    private void OnEnable()
     {
+        playerInput.Player.Move.performed += MoveOnperformed;
+        playerInput.Player.Move.canceled += MoveOncanceled;
+        playerInput.Player.Jump.performed += JumpOnperformed;
+        playerInput.Enable();
+    }
 
-        if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W))
-        {
-            if(this.jumpDelay > .03f)
-                this.Jump();
+    private void JumpOnperformed(InputAction.CallbackContext input)
+    {
+        if (!isGrounded) { return;}
+        if (jumps <= 0) { return; }
+        if (jumps > 0)
+        {     
+            isGrounded = false;
+            theRB.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+            jumps--;
+            anim.SetTrigger("Jump");
         }
+        
 
+    }
 
-        //Gets the inputs for movement
-        moveInput.x = Input.GetAxis("Horizontal");
-        //moveInput.y = Input.GetAxis("Vertical");
+    private void MoveOncanceled(InputAction.CallbackContext input)
+    {
+        moveInput = Vector3.zero;
+        anim.SetBool("isMoving", false);
+    }
 
-        //Stops any wierd directional movement speed increases
-        moveInput.Normalize();
+    private void MoveOnperformed(InputAction.CallbackContext input)
+    {
+        moveInput = input.ReadValue<Vector2>();
+        anim.SetBool("isMoving", true);
+    }
 
-        // Applies the inputs to the Rigidbody 
-        theRB.velocity = new Vector3(moveInput.x * moveSpeed, theRB.velocity.y, moveInput.y * moveSpeed);
+    private void OnDisable()
+    {
+        playerInput.Player.Move.performed -= MoveOnperformed;
+        playerInput.Player.Move.canceled -= MoveOncanceled;
+        playerInput.Player.Jump.performed -= JumpOnperformed;
+        playerInput.Disable();
+    }
+    
 
-        //Stores information if the raycast hits anything and detects the gorund when jumping
-        RaycastHit hit;
-        if (Physics.Raycast(groundPoint.position, Vector3.down, out hit, .7f, whatIsGround))
+    private void FixedUpdate()
+    {
+        theRB.velocity = new Vector2(moveInput.x * moveSpeed, theRB.velocity.y);
+
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, jumpDistanceCheck, whatIsGround);
+
+        if (hit.collider != null)
         {
-            Debug.DrawRay(groundPoint.position, Vector3.down * hit.distance, Color.green);
-
             jumpDelay = hit.distance;
-            //Debug.Log(hit.distance);
             isGrounded = true;
             jumps = maxJumps;
+            
         }
         else
         {
-            Debug.DrawRay(groundPoint.position, Vector3.down * .7f, Color.red);
             isGrounded = false;
             jumpDelay = 0f;
         }
-
-        //This flips the sprite when moving
-        if (!theSR.flipX && moveInput.x < 0)
+        
+        theSR.flipX = theSR.flipX switch
         {
-            theSR.flipX = true;
-        }
-        else if (theSR.flipX && moveInput.x > 0)
-        {
-            theSR.flipX = false;
-        }
-        anim.SetBool("onGround", isGrounded);
-        if(Input.GetAxis("Horizontal") < 0)
-        {
-            anim.SetFloat("MoveSpeed", -Input.GetAxis("Horizontal"));
-            justSwitchedFrames = -Input.GetAxis("Horizontal");
-        }
-        else
-        {
-            anim.SetFloat("MoveSpeed", Input.GetAxis("Horizontal"));
-            justSwitchedFrames = Input.GetAxis("Horizontal");
-        }
-        //if(Input.GetAxis("Horizontal") == 0 && justSwitchedFrames != 0)
-        //{
-        //    anim.SetFloat("MoveSpeed", justSwitchedFrames);
-        //}
-        //    anim.SetFloat("MoveSpeed", 3);
-
+            //This flips the sprite when moving
+            false when moveInput.x < 0 => true,
+            true when moveInput.x > 0 => false,
+            _ => theSR.flipX
+        };
     }
-    
-    private void Jump()
-       {
-        Debug.Log("Jumping");
-        if (jumps > 0)
-            {     
-                isGrounded = false;
-                gameObject.GetComponent<Rigidbody>().AddForce (new Vector3 (0, jumpForce), ForceMode.Impulse);
-                jumps = jumps - 1;
-            }
-            if (jumps == 0)
-            {
-                return;
-            }
-        }
-
 }
