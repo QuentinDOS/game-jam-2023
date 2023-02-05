@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BasicEnemyAI : MonoBehaviour
@@ -7,6 +8,7 @@ public class BasicEnemyAI : MonoBehaviour
     private float timeRunning = 0;
     public LayerMask whatIsGround;
     public float viewDistance = 1f;
+    public float collisionDistance = 2f;
 
     public float speed = 2f;
     public float playerChaseSpeed = 2.5f;
@@ -21,37 +23,35 @@ public class BasicEnemyAI : MonoBehaviour
             rb = this.GetComponent<Rigidbody2D>();
         }
     }
-
-    // Update is called once per frame
-    void Update()
+    private RaycastHit2D CheckForGround(int direction)
     {
-        
+        Vector2 startPoint = transform.position;
+        Vector2 endPoint = startPoint + new Vector2(viewDistance * direction, 0f);
+        return Physics2D.Linecast(startPoint, endPoint, whatIsGround);
     }
 
-
-    private void FixedUpdate()
+    private void MoveToGround(RaycastHit2D rayHit)
     {
-
-        RaycastHit2D hit = Physics2D.Raycast(this.transform.position, Vector2.right * direction * viewDistance, 1f, whatIsGround);
-
-        
-
-        if (hit != false)
+        float distance = Vector2.Distance(transform.position, rayHit.point);
+        if (distance >= collisionDistance)
         {
-            Debug.DrawRay(this.transform.position, Vector2.right * direction * viewDistance, Color.green);
-            //Debug.Log("Turning around");
-            direction = -direction;
-            //if(direction > 0)
-            //    this.transform.rotation = new Quaternion(0, 180, 0, 0);
-            //else
-            //    this.transform.rotation = new Quaternion(0, 0, 0, 0);
+            transform.position = Vector2.MoveTowards(transform.position, rayHit.point, speed * Time.deltaTime);
         }
         else
         {
-            Debug.DrawRay(this.transform.position, Vector2.right * direction, Color.green);
+            direction *= -1;
         }
-
-       
-        rb.velocity = new Vector2(speed * direction * Time.deltaTime, 0);
     }
+
+    private void Update()
+    {
+        RaycastHit2D hit = CheckForGround(direction);
+        if (hit.collider != null)
+        {
+            MoveToGround(hit);
+        }
+    }
+
+
+
 }
