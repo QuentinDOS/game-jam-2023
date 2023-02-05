@@ -43,7 +43,7 @@ public class CharController : MonoBehaviour
         {
             // Debug.Log("HIT");
         }
-        if (other.gameObject.tag == "Enemy")
+        if (other.gameObject.tag == "MossSlope")
         {
             Debug.Log("You got hit");
             currentHealth -= 200 * Time.deltaTime;
@@ -71,7 +71,7 @@ public class CharController : MonoBehaviour
 
         //Stores information if the raycast hits anything and detects the gorund when jumping
         RaycastHit hit;
-        if (Physics.Raycast(groundPoint.position, Vector3.down, out hit, .4f, whatIsGround))
+        if (Physics.Raycast(groundPoint.position, Vector3.down, out hit, .7f, whatIsGround))
         {
             Debug.DrawRay(groundPoint.position, Vector3.down * hit.distance, Color.green);
             isGrounded = true;
@@ -79,10 +79,9 @@ public class CharController : MonoBehaviour
         }
         else
         {
-            Debug.DrawRay(groundPoint.position, Vector3.down * .4f, Color.red);
+            Debug.DrawRay(groundPoint.position, Vector3.down * .7f, Color.red);
             isGrounded = false;
         }
-
 
         //This flips the sprite when moving
         if (!theSR.flipX && moveInput.x < 0)
@@ -93,6 +92,8 @@ public class CharController : MonoBehaviour
         {
             theSR.flipX = false;
         }
+        anim.SetBool("onGround", isGrounded);
+        anim.SetFloat("MoveSpeed", moveSpeed);
 
     }
     private void Jump()

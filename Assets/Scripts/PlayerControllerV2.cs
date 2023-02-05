@@ -1,99 +1,147 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class PlayerControllerV2 : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
-	[SerializeField] private float m_JumpForce = 400f;							// Amount of force added when the player jumps.
-	[Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;	// How much to smooth out the movement
-	[SerializeField] private bool m_AirControl = false;							// Whether or not a player can steer while jumping;
-	[SerializeField] private LayerMask m_WhatIsGround;							// A mask determining what is ground to the character
-	[SerializeField] private Transform m_GroundCheck;							// A position marking where to check if the player is grounded.
+    float playerHeight = 2f;
 
-	const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
-	private bool m_Grounded;            // Whether or not the player is grounded.
-	const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up
-	private Rigidbody m_Rigidbody;
-	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
-	private Vector3 m_Velocity = Vector3.zero;
+    [SerializeField] Transform orientation;
 
-	[Header("Events")]
-	[Space]
+    [Header("Movement")]
+    [SerializeField] float moveSpeed = 6f;
+    [SerializeField] float airMultiplier = 0.4f;
+    float movementMultiplier = 10f;
 
-	public UnityEvent OnLandEvent;
+    [Header("Sprinting")]
+    [SerializeField] float walkSpeed = 4f;
+    [SerializeField] float sprintSpeed = 6f;
+    [SerializeField] float acceleration = 10f;
 
-	[System.Serializable]
-	public class BoolEvent : UnityEvent<bool> { }
+    [Header("Jumping")]
+    public float jumpForce = 5f;
 
-	private void Awake()
-	{
-		m_Rigidbody = GetComponent<Rigidbody>();
+    [Header("Keybinds")]
+    [SerializeField] KeyCode jumpKey = KeyCode.Space;
+    [SerializeField] KeyCode sprintKey = KeyCode.LeftShift;
 
-		if (OnLandEvent == null)
-			OnLandEvent = new UnityEvent();
+    [Header("Drag")]
+    [SerializeField] float groundDrag = 6f;
+    [SerializeField] float airDrag = 2f;
 
-	}
+    float horizontalMovement;
+    float verticalMovement;
 
-	private void FixedUpdate()
-	{
-		bool wasGrounded = m_Grounded;
-		m_Grounded = false;
+    [Header("Ground Detection")]
+    [SerializeField] Transform groundCheck;
+    [SerializeField] LayerMask groundMask;
+    [SerializeField] float groundDistance = 0.2f;
+    public bool isGrounded { get; private set; }
 
-		// The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
-		// This can be done using layers instead but Sample Assets will not overwrite your project settings.
-		Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
-		for (int i = 0; i < colliders.Length; i++)
-		{
-			if (colliders[i].gameObject != gameObject)
-			{
-				m_Grounded = true;
-				if (!wasGrounded)
-					OnLandEvent.Invoke();
-			}
-		}
-	}
+    Vector3 moveDirection;
+    Vector3 slopeMoveDirection;
 
+    Rigidbody rb;
 
-	public void Move(float move, bool jump)
-	{
-		//only control the player if grounded or airControl is turned on
-		if (m_Grounded || m_AirControl)
-		{
-			// Move the character by finding the target velocity
-			Vector3 targetVelocity = new Vector2(move * 10f, m_Rigidbody.velocity.y);
-			// And then smoothing it out and applying it to the character
-			m_Rigidbody.velocity = Vector3.SmoothDamp(m_Rigidbody.velocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);
+    RaycastHit slopeHit;
 
-			// If the input is moving the player right and the player is facing left...
-			if (move > 0 && !m_FacingRight)
-			{
-				// ... flip the player.
-				Flip();
-			}
-			// Otherwise if the input is moving the player left and the player is facing right...
-			else if (move < 0 && m_FacingRight)
-			{
-				// ... flip the player.
-				Flip();
-			}
-		}
-		// If the player should jump...
-		if (m_Grounded && jump)
-		{
-			// Add a vertical force to the player.
-			m_Grounded = false;
-			m_Rigidbody.AddForce(new Vector2(0f, m_JumpForce));
-		}
-	}
+    private bool OnSlope()
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight / 2 + 0.5f))
+        {
+            if (slopeHit.normal != Vector3.up)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return false;
+    }
 
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true;
+    }
 
-	private void Flip()
-	{
-		// Switch the way the player is labelled as facing.
-		m_FacingRight = !m_FacingRight;
+    private void Update()
+    {
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-		// Multiply the player's x local scale by -1.
-		Vector3 theScale = transform.localScale;
-		theScale.x *= -1;
-		transform.localScale = theScale;
-	}
+        MyInput();
+        ControlDrag();
+        ControlSpeed();
+
+        if (Input.GetKeyDown(jumpKey) && isGrounded)
+        {
+            Jump();
+        }
+
+        slopeMoveDirection = Vector3.ProjectOnPlane(moveDirection, slopeHit.normal);
+    }
+
+    void MyInput()
+    {
+        horizontalMovement = Input.GetAxisRaw("Horizontal");
+        verticalMovement = Input.GetAxisRaw("Vertical");
+
+        moveDirection = orientation.forward * verticalMovement + orientation.right * horizontalMovement;
+    }
+
+    void Jump()
+    {
+        if (isGrounded)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        }
+    }
+
+    void ControlSpeed()
+    {
+        if (Input.GetKey(sprintKey) && isGrounded)
+        {
+            moveSpeed = Mathf.Lerp(moveSpeed, sprintSpeed, acceleration * Time.deltaTime);
+        }
+        else
+        {
+            moveSpeed = Mathf.Lerp(moveSpeed, walkSpeed, acceleration * Time.deltaTime);
+        }
+    }
+
+    void ControlDrag()
+    {
+        if (isGrounded)
+        {
+            rb.drag = groundDrag;
+        }
+        else
+        {
+            rb.drag = airDrag;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        MovePlayer();
+    }
+
+    void MovePlayer()
+    {
+        if (isGrounded && !OnSlope())
+        {
+            rb.AddForce(moveDirection.normalized * moveSpeed * movementMultiplier, ForceMode.Acceleration);
+        }
+        else if (isGrounded && OnSlope())
+        {
+            rb.AddForce(slopeMoveDirection.normalized * moveSpeed * movementMultiplier, ForceMode.Acceleration);
+        }
+        else if (!isGrounded)
+        {
+            rb.AddForce(moveDirection.normalized * moveSpeed * movementMultiplier * airMultiplier, ForceMode.Acceleration);
+        }
+    }
 }
