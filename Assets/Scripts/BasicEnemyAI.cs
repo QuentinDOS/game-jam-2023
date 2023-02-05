@@ -41,10 +41,10 @@ public class BasicEnemyAI : MonoBehaviour
             Debug.DrawRay(this.transform.position, Vector2.right * direction * viewDistance, Color.green);
             //Debug.Log("Turning around");
             direction = -direction;
-            if(direction > 0)
-                this.transform.rotation = new Quaternion(0, 180, 0, 0);
-            else
-                this.transform.rotation = new Quaternion(0, 0, 0, 0);
+            //if(direction > 0)
+            //    this.transform.rotation = new Quaternion(0, 180, 0, 0);
+            //else
+            //    this.transform.rotation = new Quaternion(0, 0, 0, 0);
         }
         else
         {
