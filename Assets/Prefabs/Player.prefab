@@ -161,7 +161,7 @@ MonoBehaviour:
   maxHealth: 3
   theRB: {fileID: 5517878818856711793}
   moveSpeed: 3
-  jumpForce: 5
+  jumpForce: 10
   maxJumps: 1
   whatIsGround:
     serializedVersion: 2
