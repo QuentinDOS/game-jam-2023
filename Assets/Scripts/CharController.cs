@@ -1,9 +1,16 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class CharController : MonoBehaviour
 {
+    public static event Action<CharController, int> OnHealthChanged;
+    public static event Action OnPlayerGameOver; 
+
+    public int currentHealth = 3;
+    public int maxHealth = 3;
+    
     //This controller uses the Rigidbody system for movement
     public Rigidbody2D theRB;
 
@@ -32,11 +39,15 @@ public class CharController : MonoBehaviour
     [SerializeField] 
     private float jumpDistanceCheck;
 
+    public List<Vector2> Checkpoints = new();
+
     private PlayerInputActions playerInput;
 
     private void Awake()
     {
         playerInput = new PlayerInputActions();
+        currentHealth = maxHealth;
+        Checkpoints.Add(transform.position);
     }
 
     private void OnEnable()
@@ -45,6 +56,21 @@ public class CharController : MonoBehaviour
         playerInput.Player.Move.canceled += MoveOncanceled;
         playerInput.Player.Jump.performed += JumpOnperformed;
         playerInput.Enable();
+    }
+
+    public void DecreaseHealth(int health)
+    {
+        currentHealth -= health;
+        OnHealthChanged?.Invoke(this, -health);
+        if (currentHealth <= 0)
+        {
+            OnPlayerGameOver?.Invoke();
+        }
+    }
+    public void IncreaseHealth(int health)
+    {
+        currentHealth += health;
+        OnHealthChanged?.Invoke(this, health);
     }
 
     private void JumpOnperformed(InputAction.CallbackContext input)
@@ -109,5 +135,10 @@ public class CharController : MonoBehaviour
             true when moveInput.x > 0 => false,
             _ => theSR.flipX
         };
+    }
+
+    public void Respawn()
+    {
+        transform.position = Checkpoints[Checkpoints.Count - 1];
     }
 }
